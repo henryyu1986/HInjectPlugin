@@ -22,8 +22,8 @@ def siteUrl = baseUrl
 def gitUrl = "${baseUrl}/HInjectPlugin.git"
 def issueUrl = "${baseUrl}/issues"
 
-group = 'oeg.henry.hinject'  // 组名
-version = '0.1.0' // 版本
+group = 'org.henry.hinject'  // 组名
+version = '0.1.1' // 版本
 
 install {
     repositories {
@@ -79,7 +79,7 @@ bintray {
 
     configurations = ['archives']
     pkg {
-        repo = 'maven' // 上传到中央仓库的名称
+        repo = 'HInjectPlugin' // 上传到中央仓库的名称
         name = 'HInjectPlugin' // 上传到jcenter 的项目名称
         websiteUrl = siteUrl
         issueTrackerUrl = issueUrl
