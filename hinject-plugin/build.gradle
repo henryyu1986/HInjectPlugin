@@ -1,0 +1,90 @@
+apply plugin: 'groovy'
+apply plugin: "maven"
+apply plugin: 'com.jfrog.bintray'
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+    compile 'org.javassist:javassist:3.20.0-GA'
+    compile 'com.android.tools.build:gradle:2.2.2'
+    compile "commons-io:commons-io:1.4"
+}
+
+repositories {
+    mavenCentral()
+}
+[compileJava, compileTestJava, compileGroovy]*.options*.encoding = 'UTF-8'
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+def baseUrl = 'https://github.com/henryyu1986'
+def siteUrl = baseUrl
+def gitUrl = "${baseUrl}/HInjectPlugin.git"
+def issueUrl = "${baseUrl}/issues"
+
+group = 'oeg.henry.hinject'  // 组名
+version = '0.1.0' // 版本
+
+install {
+    repositories {
+        mavenInstaller {
+            // This generates POM.xml with proper paramters
+            pom.project {
+                //添加项目描述
+                name 'Gradle Plugin for Android'
+                url siteUrl
+
+                //设置开源证书信息
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                //添加开发者信息
+                developers {
+                    developer {
+                        name 'HenryYu'
+                        email 'henryyu1986@163.com'
+                    }
+                }
+
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
+            }
+        }
+
+    }
+}
+
+task sourcesJar(type: Jar) {
+    from project.file('src/main/groovy')
+    classifier = 'sources'
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+//配置上传Bintray相关信息
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+
+    configurations = ['archives']
+    pkg {
+        repo = 'maven' // 上传到中央仓库的名称
+        name = 'HInjectPlugin' // 上传到jcenter 的项目名称
+        websiteUrl = siteUrl
+        issueTrackerUrl = issueUrl
+        vcsUrl = gitUrl
+        licenses = ['Apache-2.0']
+        publish = true
+    }
+}
