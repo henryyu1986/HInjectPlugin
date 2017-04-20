@@ -1,4 +1,19 @@
 apply plugin: 'com.android.application'
+apply plugin: org.henry.hinject.HInjectPlugin
+//apply plugin: 'hinject-plugin'
+//
+//buildscript {
+//    repositories {
+//        maven {
+//            jcenter()
+//            url uri('../hinject-plugin/repo')
+//        }
+//    }
+//    dependencies {
+//        classpath 'com.android.tools.build:gradle:2.2.2'
+//        classpath 'org.henry.hinject:hinject-plugin:0.1.2'
+//    }
+//}
 
 android {
     compileSdkVersion 24
@@ -9,6 +24,9 @@ android {
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
+//        jackOptions {
+//            enabled true
+//        }
     }
     buildTypes {
         release {
@@ -16,9 +34,42 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+//    compileOptions {
+//        sourceCompatibility JavaVersion.VERSION_1_8
+//        targetCompatibility JavaVersion.VERSION_1_8
+//    }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:support-v4:24.2.1'
+    compile files('lib/ebase.jar')
+}
+
+hinject {
+    debug = true // is debug
+    injectMethod = ['.*Activity': ''] // inject method to class
+    injectVariables = [:] // inject variables to class
+    inject2Method = [
+            '.*Activity': [[methodName        : 'onStart',
+                            injectCode        : 'System.out.println("启动");',
+                            containSuperMethod: true, // is contains super method
+                            injectLine        : 'after' // support number, after, before
+                           ],
+                           [methodName        : 'onStop',
+                            injectCode        : 'System.out.println("退出");',
+                            containSuperMethod: true, // is contains super method
+                            injectLine        : 'after', // support number, after, before
+                            injectAnnotation  : [
+                                    [annotationClass: 'java.lang.SuppressWarnings',
+                                     annotationParam: [value: 'all']]
+                            ]]],// annotation array
+            '.*Fragment': [[methodName        : 'onStop',
+                            injectCode        : 'System.out.println("退出");',
+                            containSuperMethod: true, // is contains super method
+                            injectLine        : 'after', // support number, after, before
+                           ]]// annotation array
+    ] // inject code to method
+    packageName = 'org.henry.hinjectplugin' // app package name
 }

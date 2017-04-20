@@ -14,8 +14,6 @@ repositories {
     mavenCentral()
 }
 [compileJava, compileTestJava, compileGroovy]*.options*.encoding = 'UTF-8'
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
 
 def baseUrl = 'https://github.com/henryyu1986'
 def siteUrl = baseUrl
@@ -23,7 +21,7 @@ def gitUrl = "${baseUrl}/HInjectPlugin.git"
 def issueUrl = "${baseUrl}/issues"
 
 group = 'org.henry.hinject'  // 组名
-version = '0.1.1' // 版本
+version = '0.2.0' // 版本
 
 install {
     repositories {
@@ -60,14 +58,23 @@ install {
     }
 }
 
-task sourcesJar(type: Jar) {
-    from project.file('src/main/groovy')
-    classifier = 'sources'
+uploadArchives {
+//    version = version + '-SNAPSHOT'//if you are testing the demo I provide locally, you can uncomment this.
+    repositories {
+        mavenDeployer {
+            repository(url: uri('./repo'))
+        }
+    }
 }
 
-artifacts {
-    archives sourcesJar
-}
+//task sourcesJar(type: Jar) {
+//    from project.file('src/main/groovy')
+//    classifier = 'sources'
+//}
+
+//artifacts {
+//    archives sourcesJar
+//}
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())

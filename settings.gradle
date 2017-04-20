@@ -1,1 +1,1 @@
-include ':app', ':hinject-plugin'
+include ':app', ':hinject-plugin', ':buildsrc'
